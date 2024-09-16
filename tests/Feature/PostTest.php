@@ -29,4 +29,25 @@ class PostTest extends TestCase
          $response->assertStatus(200);
          $response->assertSee($post->title);
      }
+
+     public function test_guest_cannot_access_posts_show()
+     {
+         $user = User::factory()->create();
+         $post = Post::factory()->create(['user_id' => $user->id]);
+ 
+         $response = $this->get(route('posts.show', $post));
+ 
+         $response->assertRedirect(route('login'));
+     }
+
+     public function test_user_can_access_posts_show()
+     {
+         $user = User::factory()->create();
+         $post = Post::factory()->create(['user_id' => $user->id]);
+ 
+         $response = $this->actingAs($user)->get(route('posts.show', $post));
+ 
+         $response->assertStatus(200);
+         $response->assertSee($post->title);
+     }
 }
