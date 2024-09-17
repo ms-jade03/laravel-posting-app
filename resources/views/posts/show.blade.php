@@ -24,6 +24,11 @@
  
   <main>
     <h1>投稿詳細</h1>
+    
+    @if (session('flash_message'))
+      <p>{{ session('flash_message') }}</p>
+    @endif
+
     <a href="{{ route('posts.index') }}">&lt; 戻る</a>
     <article>
       <h2>{{ $post->title }}</h2>
