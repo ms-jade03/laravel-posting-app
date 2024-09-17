@@ -94,4 +94,35 @@ class PostTest extends TestCase
          $this->assertDatabaseHas('posts', $post);
          $response->assertRedirect(route('posts.index'));
      }
+
+     public function test_guest_cannot_access_posts_edit()
+     {
+         $user = User::factory()->create();
+         $post = Post::factory()->create(['user_id' => $user->id]);
+ 
+         $response = $this->get(route('posts.edit', $post));
+ 
+         $response->assertRedirect(route('login'));
+     }
+
+     public function test_user_cannot_access_others_posts_edit()
+     {
+         $user = User::factory()->create();
+         $other_user = User::factory()->create();
+         $others_post = Post::factory()->create(['user_id' => $other_user->id]);
+ 
+         $response = $this->actingAs($user)->get(route('posts.edit', $others_post));
+ 
+         $response->assertRedirect(route('posts.index'));
+     }
+
+     public function test_user_can_access_own_posts_edit()
+     {
+         $user = User::factory()->create();
+         $post = Post::factory()->create(['user_id' => $user->id]);
+ 
+         $response = $this->actingAs($user)->get(route('posts.edit', $post));
+ 
+         $response->assertStatus(200);
+     }
 }
