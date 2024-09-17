@@ -24,7 +24,7 @@
  
   <main>
     <h1>投稿詳細</h1>
-    
+
     @if (session('flash_message'))
       <p>{{ session('flash_message') }}</p>
     @endif
@@ -33,6 +33,10 @@
     <article>
       <h2>{{ $post->title }}</h2>
       <p>{{ $post->content }}</p>
+
+      @if ($post->user_id === Auth::id())
+        <a href="{{ route('posts.edit', $post) }}">編集</a>
+      @endif
     </article>
   </main>
  
